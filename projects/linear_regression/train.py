@@ -40,12 +40,12 @@ if __name__ == "__main__":
         predicted_values=predicted_values * 1e5, real_values=charges_train * 1e5,
     )
 
-    print(f"Mean Squared Error in train: {mse_train}")
-    print(f"Coefficient of determination in train: {r2_train}\n")
+    print(f"Mean Squared Error in train: {mse_train:.2f}")
+    print(f"Coefficient of determination in train: {r2_train:.2f}\n")
 
     # test the model
     predicted_values = model.predict(bmi_test)
-
+    print(predicted_values)
     # get statistics
     mse_test = LinearRegressionGD.get_mean_squared_error(
         predicted_values=predicted_values * 1e5, real_values=charges_test * 1e5,
@@ -54,8 +54,8 @@ if __name__ == "__main__":
         predicted_values=predicted_values * 1e5, real_values=charges_test * 1e5,
     )
 
-    print(f"Mean Squared Error in test: {mse_test}")
-    print(f"Coefficient of determination in test: {r2_test}\n")
+    print(f"Mean Squared Error in test: {mse_test:.2f}")
+    print(f"Coefficient of determination in test: {r2_test:.2f}\n")
 
     # export model
     with open("model.pickle", "wb") as handle:
