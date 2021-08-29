@@ -5,11 +5,8 @@ Model source: https://www.geeksforgeeks.org/gradient-descent-in-linear-regressio
 """
 
 from typing import List
-from os import getcwd
 
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 
 class LinearRegressionGD(object):
@@ -65,38 +62,27 @@ class LinearRegressionGD(object):
         """
         return np.dot(samples, self._weights)
 
+    @staticmethod
+    def get_mean_squared_error(predicted_values: np.ndarray, real_values: np.ndarray) -> float:
+        error = 0.0
 
-if __name__ == "__main__":
-    # init the plot figures
-    fig = plt.figure()
-    ax1 = fig.add_subplot(111)
+        if len(predicted_values) != len(real_values):
+            raise Exception("Predicted values and real values are not of the same size")
 
-    # get data for the model
-    data = pd.read_csv(f"{getcwd()}/insurance.csv")
-    filtered_data = data[~data["smoker"].str.contains("no")]
+        for predicted, real in np.c_[predicted_values, real_values]:
+            error += (real - predicted) ** 2
 
-    # split train and test data
-    data_half_length = len(filtered_data.index) // 2
+        return error / len(predicted_values)
 
-    train_data = filtered_data[:data_half_length]
-    test_data = filtered_data[data_half_length:]
+    @staticmethod
+    def get_r2(predicted_values: np.ndarray, real_values: np.ndarray) -> float:
+        rss = 0.0
+        for predicted, real in np.c_[predicted_values, real_values]:
+            rss += (real - predicted) ** 2
 
-    # get train x and y values
-    bmi_train = train_data[["bmi"]].values * 1e-2
-    charges_train = train_data[["charges"]].values * 1e-5
+        real_values_mean = np.mean(real_values)
+        tss = 0.0
+        for value in real_values:
+            tss += (float(value) - real_values_mean) ** 2
 
-    # get the test x values
-    bmi_test = test_data[["bmi"]].values * 1e-2
-    charges_test = test_data[["charges"]].values * 1e-5
-
-    # train the model
-    model = LinearRegressionGD()
-    model.train(bmi_train, charges_train)
-
-    # test the model
-    predicted_values = model.predict(bmi_test)
-
-    ax1.scatter(bmi_train, charges_train, s=10, c="b", label="Transaction date train")
-    ax1.scatter(bmi_test, charges_test, s=10, c="g", label="Transaction date test")
-    ax1.plot(bmi_test, predicted_values, c="r", label="predicted", linewidth=3)
-    plt.show()
+        return 1 - (rss / tss)

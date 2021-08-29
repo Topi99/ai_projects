@@ -110,6 +110,17 @@ test = ["hypothesis (>=3.58)", "pytest (>=6.0)", "pytest-xdist"]
 
 [[package]]
 category = "main"
+description = "Backport of pickle protocol 4"
+name = "pickle4"
+optional = false
+python-versions = "*"
+version = "0.0.1"
+
+[package.dependencies]
+setuptools = "*"
+
+[[package]]
+category = "main"
 description = "Python Imaging Library (Fork)"
 name = "pillow"
 optional = false
@@ -201,7 +212,7 @@ python-versions = "*"
 version = "0.2.5"
 
 [metadata]
-content-hash = "e31f1dfdbd2e3c650367c27248ba8cb8eb1bc58337a323c8879c92b05ffc69a3"
+content-hash = "114404f6fd434dff66d0c8e444bd0a5354833dda25df59dc81d9dec113a5bbf9"
 python-versions = "3.8.1"
 
 [metadata.files]
@@ -338,6 +349,9 @@ pandas = [
     {file = "pandas-1.3.2-cp39-cp39-win32.whl", hash = "sha256:66a95361b81b4ba04b699ecd2416b0591f40cd1e24c60a8bfe0d19009cfa575a"},
     {file = "pandas-1.3.2-cp39-cp39-win_amd64.whl", hash = "sha256:89f40e5d21814192802421df809f948247d39ffe171e45fe2ab4abf7bd4279d8"},
     {file = "pandas-1.3.2.tar.gz", hash = "sha256:cbcb84d63867af3411fa063af3de64902665bb5b3d40b25b2059e40603594e87"},
+]
+pickle4 = [
+    {file = "pickle4-0.0.1.tar.gz", hash = "sha256:23f32ba65d7548fb8490badf3349cfa45abf80e81409e598a10090fb832488df"},
 ]
 pillow = [
     {file = "Pillow-8.3.1-1-cp36-cp36m-win_amd64.whl", hash = "sha256:fd7eef578f5b2200d066db1b50c4aa66410786201669fb76d5238b007918fb24"},
