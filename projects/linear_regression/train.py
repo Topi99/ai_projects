@@ -45,7 +45,7 @@ if __name__ == "__main__":
 
     # test the model
     predicted_values = model.predict(bmi_test)
-    print(predicted_values)
+
     # get statistics
     mse_test = LinearRegressionGD.get_mean_squared_error(
         predicted_values=predicted_values * 1e5, real_values=charges_test * 1e5,

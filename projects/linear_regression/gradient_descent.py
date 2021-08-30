@@ -64,25 +64,20 @@ class LinearRegressionGD(object):
 
     @staticmethod
     def get_mean_squared_error(predicted_values: np.ndarray, real_values: np.ndarray) -> float:
-        error = 0.0
-
         if len(predicted_values) != len(real_values):
             raise Exception("Predicted values and real values are not of the same size")
 
-        for predicted, real in np.c_[predicted_values, real_values]:
-            error += (real - predicted) ** 2
+        error = np.sum((predicted_values - real_values) ** 2)
 
         return error / len(predicted_values)
 
     @staticmethod
     def get_r2(predicted_values: np.ndarray, real_values: np.ndarray) -> float:
-        rss = 0.0
-        for predicted, real in np.c_[predicted_values, real_values]:
-            rss += (real - predicted) ** 2
+        # sum of the square of residuals
+        rss = np.sum((predicted_values - real_values) ** 2)
 
-        real_values_mean = np.mean(real_values)
-        tss = 0.0
-        for value in real_values:
-            tss += (float(value) - real_values_mean) ** 2
+        # sum of the squares
+        tss = np.sum((real_values - np.mean(real_values)) ** 2)
 
+        # R2 score
         return 1 - (rss / tss)
