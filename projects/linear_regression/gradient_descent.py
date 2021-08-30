@@ -14,7 +14,7 @@ class LinearRegressionGD(object):
         """
         :param learning_rate:
             1. If we choose the value to be very large, GD can overshoot the minimum.
-            If may fail to coverage or even diverge.
+            It may fail to coverage or even diverge.
             2. If we choose the value to be very small, GD will take small steps to
             reach local minima and will take a longer time to reach minima.
         :param iterations: Number of passes over the training set.
