@@ -4,7 +4,7 @@ import implicit.als as als
 
 from projects.recommender.gradient_descent import GradientDescentMF
 
-FILE_NAME = "skills_ordered.csv"
+FILE_NAME = "skills_simple.csv"
 
 if __name__ == "__main__":
     # read the data
@@ -24,10 +24,8 @@ if __name__ == "__main__":
 
     # transform skill names to categorical values
     data["skill_name"] = data["skill_name"].astype("category")
-
     # normalize user_ids as categorical codes
     data["user_id"] = data["uuid"].cat.codes
-    print(f"{data['user_id'] = }")
 
     # normalize skill_ids as categorical codes
     data["skill_id"] = data["skill_name"].cat.codes
@@ -57,8 +55,12 @@ if __name__ == "__main__":
     # alpha = 40
     # data_confidence = (sparse_item_user * alpha).astype('double')
     # recommender.fit(data_confidence)
+
     recommender = GradientDescentMF(
-        item_user=sparse_item_user, verbose=True, features=3, iterations=200
+        user_item=sparse_user_item.A.astype('double'),
+        verbose=False,
+        features=3,
+        iterations=200,
     )
     recommender.train()
 

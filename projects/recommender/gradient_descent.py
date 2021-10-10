@@ -13,7 +13,7 @@ class GradientDescentMF:
 
     def __init__(
         self,
-        item_user: csr_matrix,
+        user_item: np.ndarray,
         features: int = 1,
         verbose: bool = False,
         learning_rate: float = 0.1,
@@ -23,11 +23,11 @@ class GradientDescentMF:
         self._learning_rate = learning_rate
         self._iterations = iterations
 
-        self._item_user = item_user.copy().toarray()
-        self._log(f"{self._item_user.shape = }")
+        self._user_item = user_item
+        self._log(f"{self._user_item.shape = }")
         self._features = features
-        self._users_count: int = self._item_user.shape[0]
-        self._items_count: int = self._item_user.shape[1]
+        self._users_count: int = self._user_item.shape[0]
+        self._items_count: int = self._user_item.shape[1]
         self._log(f"{self._users_count = }")
         self._log(f"{self._items_count = }")
 
@@ -46,7 +46,7 @@ class GradientDescentMF:
         """
 
         matrix_product = np.matmul(self._user_features, self._features_item)
-        return np.sum((self._item_user - matrix_product) ** 2)
+        return np.sum((self._user_item - matrix_product) ** 2)
 
     def _single_gradient_user(
         self, user_row: int, item_col: int, feature_index: int,
@@ -62,7 +62,7 @@ class GradientDescentMF:
 
         user_row_feature = self._user_features[user_row, :]
         item_col_feature = self._features_item[:, item_col]
-        user_item_rating = float(self._item_user[user_row, item_col])
+        user_item_rating = float(self._user_item[user_row, item_col])
         prediction = float(np.dot(user_row_feature, item_col_feature))
 
         feature_item = float(item_col_feature[feature_index])
@@ -84,7 +84,7 @@ class GradientDescentMF:
 
         user_row_feature = self._user_features[user_row, :]
         item_col_feature = self._features_item[:, item_col]
-        user_item_rating = float(self._item_user[user_row, item_col])
+        user_item_rating = float(self._user_item[user_row, item_col])
         prediction = float(np.dot(user_row_feature, item_col_feature))
 
         feature_item = float(user_row_feature[feature_index])
@@ -125,7 +125,7 @@ class GradientDescentMF:
 
         gradients_acum = 0
         for row in range(0, self._users_count):
-            gradients_acum += self._single_gradient_user(
+            gradients_acum += self._single_gradient_item(
                 user_row=row,
                 item_col=item_col,
                 feature_index=feature_item_index,
@@ -168,38 +168,36 @@ class GradientDescentMF:
         if self._verbose:
             trained_model = np.dot(self._user_features, self._features_item)
             print(f"{trained_model = }")
-            print(f"{self._item_user = }")
+            print(f"{self._user_item = }")
 
     def recommend(
         self,
         user_id: int,
-        user_items: csr_matrix,
+        item_user: csr_matrix,
         n: int = 3,
     ) -> List[Tuple[int, float]]:
         user_feature = self._user_features[user_id]
-        self._log(f"{user_feature = }")
+        item_user_array = item_user.A
 
         liked = set()
-        liked.update(user_items[user_id].indices)
+        liked.update(item_user[user_id].indices)
         self._log(f"{liked = }")
 
         # calculate top N items, removing the users own liked items
-        # scores = self._features_item.dot(user_feature)
-        scores = np.dot(user_feature, self._features_item)
+        scores = self._features_item.T.dot(user_feature)
+        # scores = np.dot(user_feature, self._features_item)
         self._log(f"{scores = }")
 
         count = n + len(liked)
         if count < len(scores):
             ids = np.argpartition(scores, -count)[-count:]
             best = sorted(zip(ids, scores[ids]), key=lambda x: -x[1])
-            self._log(f"{best = }")
         else:
             best = sorted(enumerate(scores), key=lambda x: -x[1])
-            self._log(f"{best = }")
+        self._log(f"{best = }")
 
         return list(itertools.islice(
-            (rec for rec in best if rec[0] not in liked),
-            n)
+            (rec for rec in best if rec[0] not in liked), n)
         )
 
     def _log(self, message: str) -> None:
