@@ -1,7 +1,3 @@
-import pandas as pd
-import scipy.sparse as sparse
-import implicit.als as als
-
 from projects.recommender.data_handler import DataHandler
 from projects.recommender.gradient_descent import GradientDescentMF
 
