@@ -1,6 +1,7 @@
 # Created by: Topiltzin Hernández Mares
 # Created at: 07/10/2021
 # GitHub: https://github.com/Topi99
+import asyncio
 import itertools
 from typing import List, Tuple
 
@@ -132,7 +133,7 @@ class GradientDescentMF:
             )
         return gradients_acum / self._users_count
 
-    def _update_user_features(self) -> None:
+    async def _update_user_features(self) -> None:
         """Updates every user-feature parameter"""
 
         for user_row in range(0, self._users_count):
@@ -143,7 +144,7 @@ class GradientDescentMF:
                     )
                 )
 
-    def _update_item_features(self) -> None:
+    async def _update_item_features(self) -> None:
         """Updates every feature-item parameter"""
 
         for feature_row in range(0, self._features):
@@ -158,17 +159,25 @@ class GradientDescentMF:
         """Trains the current model"""
 
         for i in range(self._iterations):
-            self._update_user_features()
-            self._update_item_features()
+            asyncio.run(self._train_parallel())
 
             if self._verbose and i % 50 == 0:
-                print(f"Mean Squared Error in iteration #{i}")
+                print(f"Mean Squared Error in iteration #{i + 1}")
                 print(f"\t{self.mean_squared_error():.4f}")
+
+        print(f"Final Mean Squared Error")
+        print(f"\t{self.mean_squared_error():.4f}")
 
         if self._verbose:
             trained_model = np.dot(self._user_features, self._features_item)
             print(f"{trained_model = }")
             print(f"{self._user_item = }")
+
+    async def _train_parallel(self) -> None:
+        await asyncio.gather(
+            self._update_user_features(),
+            self._update_item_features()
+        )
 
     def recommend(
         self,
@@ -177,7 +186,6 @@ class GradientDescentMF:
         n: int = 3,
     ) -> List[Tuple[int, float]]:
         user_feature = self._user_features[user_id]
-        item_user_array = item_user.A
 
         liked = set()
         liked.update(item_user[user_id].indices)
