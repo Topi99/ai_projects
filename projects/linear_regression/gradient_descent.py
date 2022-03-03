@@ -1,6 +1,6 @@
 """
 Created by: Topiltzin Hernández Mares
-Date: 19/08/2021
+Date: 02/03/22
 Model source: https://www.geeksforgeeks.org/gradient-descent-in-linear-regression/
 """
 
