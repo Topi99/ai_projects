@@ -6,7 +6,7 @@ import numpy as np
 from projects.linear_regression.gradient_descent import LinearRegressionGD
 
 if __name__ == "__main__":
-    with open("model.pickle", "rb") as handle:
+    with open("model_old.pickle", "rb") as handle:
         dump = pickle.load(handle)
         model: Optional[LinearRegressionGD] = dump.get("model", None)
 
